@@ -1,0 +1,38 @@
+
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider  = "postgresql"
+    url       = env("DATABASE_URL")
+    directUrl = env("DIRECT_URL")
+}
+
+//Use it if using stack auth authentication and lemonsqueezy
+enum PlanType {
+    FREE
+    PRO
+    SCALE
+}
+
+model User {
+    id                     String  @id @default(uuid())
+    primary_email_verified Boolean
+    signed_up_at_millis    BigInt
+    has_password           Boolean
+    primary_email          String? @unique
+    display_name           String?
+    profile_image_url      String?
+    client_metadata        Json? // Using Json type to store arbitrary data
+    server_metadata        Json?
+
+    plan_type PlanType @default(FREE)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
